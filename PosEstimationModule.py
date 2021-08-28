@@ -67,7 +67,7 @@ class poseDetector():
             cv2.circle(img, (x3, y3), 15, (0, 0, 255), 1)
             # cv2.putText(img, str(int(angle)), (x2 - 20, y2 + 50), cv2.FONT_HERSHEY_SIMPLEX,
             #             1, (0, 0, 255), 2)
-        return  angle
+        return angle
 
 def main():
     wCam, hCam = 640, 480

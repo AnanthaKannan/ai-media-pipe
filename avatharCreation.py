@@ -3,8 +3,8 @@ import numpy as np
 import PosEstimationModule as pm
 
 detector = pm.poseDetector()
-cap = cv2.VideoCapture('videos/body3.mp4')
-# cap = cv2.VideoCapture(0)
+# cap = cv2.VideoCapture('videos/karate.mp4')
+cap = cv2.VideoCapture(0)
 
 def bodyDrawing(lmList):
     # neck
@@ -50,8 +50,8 @@ while True:
         # print(lmList[14])
         bodyDrawing(lmList)
 
-    fx=0.40
-    fy=0.40
+    fx=1
+    fy=1
     img_ = cv2.resize(img, None, fx=fx, fy=fy)
     avathar_ = cv2.resize(median, None, fx=fx, fy=fy)
     cv2.imshow("Image", img_)

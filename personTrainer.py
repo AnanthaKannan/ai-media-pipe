@@ -3,7 +3,7 @@ import numpy as np
 import PosEstimationModule as pm
 
 # cap = cv2.VideoCapture(0)
-path = "videos/workOut.mp4"
+path = "videos/workOutMyself.mp4"
 cap = cv2.VideoCapture(path)
 
 detector = pm.poseDetector()
@@ -13,7 +13,8 @@ dir = 0
 
 while True:
     _, img = cap.read()
-    img = cv2.resize(img, (854, 480))
+    img = cv2.rotate(img, cv2.ROTATE_90_COUNTERCLOCKWISE)
+    img = cv2.resize(img, (940, 580))
     img = detector.findPose(img, draw=False)
     lmList = detector.getPosition(img)
     if len(lmList) != 0:
