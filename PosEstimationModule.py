@@ -3,10 +3,10 @@ import mediapipe as mp
 import time
 import math
 
+
 class poseDetector():
-    def __init__(self, mode=False, upBody=False, smooth=True, detectionCon = 0.5, trackCon=0.5):
+    def __init__(self, mode=False, smooth=True, detectionCon=0.5, trackCon=0.5):
         self.mode = mode
-        self.upBody = upBody
         self.smooth = smooth
         self.detectionCon = detectionCon
         self.trackCon = trackCon
@@ -14,8 +14,10 @@ class poseDetector():
 
         self.mpDraw = mp.solutions.drawing_utils
         self.mpPose = mp.solutions.pose
-        self.pose = self.mpPose.Pose(self.mode, self.upBody, self.smooth,
-                                     self.detectionCon, self.trackCon)
+        self.pose = self.mpPose.Pose(static_image_mode=self.mode,
+                                smooth_landmarks=self.smooth,
+                                min_detection_confidence=self.detectionCon,
+                                min_tracking_confidence=self.trackCon)
 
     def findPose(self, img, draw=True):
         imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
@@ -31,7 +33,7 @@ class poseDetector():
         if self.results.pose_landmarks:
             for id, lm in enumerate(self.results.pose_landmarks.landmark):
                 h, w, c = img.shape
-                cx, cy = int(lm.x * w), int(lm.y*h)
+                cx, cy = int(lm.x * w), int(lm.y * h)
                 self.lmList.append([id, cx, cy])
         return self.lmList
 
@@ -39,7 +41,7 @@ class poseDetector():
         cTime = time.time()
         print(cTime, self.pTime)
         fbs = 1 / (cTime - self.pTime)
-        pTime = cTime
+        self.pTime = cTime
         cv2.putText(img, str(int(fbs)), (70, 80), cv2.FONT_HERSHEY_PLAIN, 3,
                     (255, 0, 0), 3)
 
@@ -50,7 +52,7 @@ class poseDetector():
         x3, y3 = self.lmList[p3][1:]
 
         # Calculate the angle
-        angle = math.degrees(math.atan2(y3 - y2, x3 - x2) - math.atan2(y1 - y2, x1-x2))
+        angle = math.degrees(math.atan2(y3 - y2, x3 - x2) - math.atan2(y1 - y2, x1 - x2))
         # some time this angle comes zero, so below conditon we added
         if angle < 0:
             angle += 360
@@ -69,9 +71,8 @@ class poseDetector():
             #             1, (0, 0, 255), 2)
         return angle
 
+
 def main():
-    wCam, hCam = 640, 480
-    # cap = cv2.VideoCapture('videos/body.mp4')
     detector = poseDetector()
     cap = cv2.VideoCapture(0)
     while True:
@@ -81,7 +82,7 @@ def main():
         # print(lmList)
         detector.showFps(img)
         cv2.imshow("Image", img)
-        cv2.waitKey(12)
+        cv2.waitKey(1)
 
 
 if __name__ == "__main__":
